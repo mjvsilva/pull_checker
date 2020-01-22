@@ -36,7 +36,7 @@ with open('lab_names.txt', 'r') as f:
     lab_names = [name.strip("\'") for name in list(reader)[0]]
 
 path1 = 'https://api.github.com/repos/ta-data-lis/'
-path2 = '/pulls?state=open'
+path2 = '/pulls?state=closed'
 
 with open('links.txt', 'w', newline='') as myfile:
 #          wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
@@ -45,22 +45,29 @@ with open('links.txt', 'w', newline='') as myfile:
         myfile.write(",\"" + path1 + lab_name + path2 + "\"")
 print('\nlinks.txt has been filled')
 
+
+# Do the job:  
+
 with open('links.txt', 'r') as f:
     reader = csv.reader(f)
     page_list = list(reader)[0][1:]
     
 
-# Do the job:    
-
 token = '5e71cf50d45536be4e0ea4d94a5c70419d69fc72'
 
 zeroes = [] # labs with 0 open pull requests
 
-print('\nGetting labs info...\n\n\n')
+week_number = int(input("\nWhich week? "))
 
-for url in page_list:
+limit_dict = {1:8, 2:15, 3:21, 4:30, 5:40, 6:40, 7:46, 8:len(page_list), 9:len(page_list)}
+
+top_limit = limit_dict[week_number] + 2
+
+print('\nGetting labs info (this may take a while)...\n\n')
+
+for url in page_list[:top_limit]:
     
-    lab_name = url[39:].strip('pulls?state=open').strip('/')
+    lab_name = url[39:].strip('pulls?state=closed').strip('/')
     request = Request(url)
     request.add_header('Authorization', 'token %s' % token)
     response = urlopen(request)
@@ -68,27 +75,36 @@ for url in page_list:
     data = json.loads(response.read().decode())
 
     count = 0
+    count2 = 0
     
     lab_links = []
     
-    for i in range(13):
+    for i in range(19):
     
         try:
-            user = data[i]['user']['login']
-            lab_links.append('[' + data[i]['user']['login'] + ']' + '  ' + data[i]['html_url'])
-            
-            # Writes Delivered in Control Panel
-            labs.update_cell(users[user], lab_cp[lab_name], 'Delivered')            
-            
+            if len(data[i]['labels'])==0:
+                user = data[i]['user']['login']
+                lab_links.append('[' + data[i]['user']['login'] + ']' + '  ' + data[i]['html_url'])
+
+                # Writes Delivered in Control Panel
+                labs.update_cell(users[user], lab_cp[lab_name], 'Delivered')
+                count2 += 1
         except:
+            continue
+        
+        if not data[i]['created_at'].startswith('2020-01'):
             break
             
-    count = i
-    if not count:
-        zeroes.append(lab_name)
+        count += 1
         
-    else:
-        print('\n' + str(count) + ' open PR for ' + lab_name + ':\n')
+#     if not count:
+#         zeroes.append(lab_name)
+        
+#     else:
+
+    if count2:
+        print('\n' + str(count) + ' checked PR for ' + lab_name + '\n')
+        print(str(count2) + ' PR to check for ' + lab_name + ':\n')
         lab_links.reverse()
         print(*lab_links,sep='\n')
 
