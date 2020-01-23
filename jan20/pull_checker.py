@@ -1,4 +1,3 @@
-# Hey TAs
 # Import libraries:
 import csv
 import os
@@ -75,37 +74,36 @@ for url in page_list[:top_limit]:
     # print(response.read())
     data = json.loads(response.read().decode())
 
-    count = 0
+#     count = 0
     count2 = 0
     
     lab_links = []
     
-    for i in range(19):
+    i = 0
     
-        try:
-            if len(data[i]['labels'])==0:
-                user = data[i]['user']['login']
-                lab_links.append('[' + data[i]['user']['login'] + ']' + '  ' + data[i]['html_url'])
+    while data[i]['created_at'].startswith('2020-01'):   
 
-                # Writes Delivered in Control Panel
-                labs.update_cell(users[user], lab_cp[lab_name], 'Delivered')
-                count2 += 1
-        except:
-            continue
-        
-        if not data[i]['created_at'].startswith('2020-01'):
-            break
+        if len(data[i]['labels'])==0:
+
+            user = data[i]['user']['login']
+            lab_links.append('[' + data[i]['user']['login'] + ']' + '  ' + data[i]['html_url'])
+
+            # Writes Delivered in Control Panel
+            labs.update_cell(users[user], lab_cp[lab_name], 'Delivered')
+            count2 += 1
             
-        count += 1
-        
+#         count += 1
+
+        i += 1
+    
 #     if not count:
 #         zeroes.append(lab_name)
         
 #     else:
 
     if count2:
-        print('\n' + str(count) + ' checked PR for ' + lab_name + '\n')
-        print(str(count2) + ' PR to check for ' + lab_name + ':\n')
+#         print('\n\n' + str(count) + ' checked PR for ' + lab_name)
+        print('\n' + str(count2) + ' PR to check for ' + lab_name + ':\n')
         lab_links.reverse()
         print(*lab_links,sep='\n')
 
