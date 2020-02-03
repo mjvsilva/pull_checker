@@ -82,7 +82,7 @@ for url in page_list[:top_limit]:
     i = 0
     
 
-    while i < len(data) and data[i]['created_at'].startswith('2020-01'):   
+    while i < len(data) and data[i]['created_at'].startswith('2020'):   
 
         if len(data[i]['labels'])==0:
 
