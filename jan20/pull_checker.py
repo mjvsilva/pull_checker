@@ -74,7 +74,6 @@ for url in page_list[:top_limit]:
     # print(response.read())
     data = json.loads(response.read().decode())
 
-#     count = 0
     count2 = 0
     
     lab_links = []
@@ -83,31 +82,22 @@ for url in page_list[:top_limit]:
     
 
     while i < len(data) and data[i]['created_at'].startswith('2020'):   
-
+        
         if len(data[i]['labels'])==0:
 
             user = data[i]['user']['login']
-            lab_links.append('[' + data[i]['user']['login'] + ']' + '  ' + data[i]['html_url'])
 
             # Writes Delivered in Control Panel
-            labs.update_cell(users[user], lab_cp[lab_name], 'Delivered')
-            count2 += 1
-            
-#         count += 1
-
+            if user in users:
+                labs.update_cell(users[user], lab_cp[lab_name], 'Delivered')
+                lab_links.append('[' + data[i]['user']['login'] + ']' + '  ' + data[i]['html_url'])
+                count2 += 1
+                
         i += 1
-    
-#     if not count:
-#         zeroes.append(lab_name)
-        
-#     else:
-
+            
     if count2:
-#         print('\n\n' + str(count) + ' checked PR for ' + lab_name)
         print('\n' + str(count2) + ' PR to check for ' + lab_name + ':\n')
         lab_links.reverse()
         print(*lab_links,sep='\n')
-
-# print('\n\n' + str(len(zeroes)) + ' labs with 0 PR.')
       
 print('\n\nHave a good time checking!\n')
