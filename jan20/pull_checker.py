@@ -55,11 +55,9 @@ with open('links.txt', 'r') as f:
 
 token = '5e71cf50d45536be4e0ea4d94a5c70419d69fc72'
 
-zeroes = [] # labs with 0 open pull requests
-
 week_number = int(input("\nWhich week? "))
 
-limit_dict = {1:8, 2:15, 3:21, 4:30, 5:40, 6:40, 7:46, 8:len(page_list), 9:len(page_list)}
+limit_dict = {1:8, 2:16, 3:22, 4:30, 5:40, 6:40, 7:46, 8:len(page_list), 9:len(page_list)}
 
 top_limit = limit_dict[week_number] + 2
 
