@@ -119,4 +119,4 @@ for url in page_list[:top_limit]:
     if api_limit == 99:
         break
       
-print('\n\nHave a good time checking!\n')
+print('\n\nHave a good time checking! 🍕 \n')
